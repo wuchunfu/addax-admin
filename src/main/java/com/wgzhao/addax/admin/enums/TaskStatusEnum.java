@@ -1,15 +1,24 @@
 package com.wgzhao.addax.admin.enums;
 
 /**
- * @author liuting
+ * @author yangkai
  */
+
 public enum TaskStatusEnum
 {
-    INITIAL(0, "初始值"),
+    /**
+     * 初始
+     */
+    INITIAL(0, "初始"),
+    /**
+     * 成功
+     */
+    SUCCESS(1, "成功"),
 
-    ADD_FIELD_FINISHED(1, "字段信息入库完成"),
-
-    ALL_FINISHED(2, "任务全部完成"),
+    /**
+     * 失败
+     */
+    FAIL(2, "失败"),
     ;
 
     private final Integer code;

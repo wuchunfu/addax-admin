@@ -1,18 +1,18 @@
 package com.wgzhao.addax.admin.mapper;
 
 import com.wgzhao.addax.admin.pojo.TableInfo;
-import com.wgzhao.addax.admin.pojo.TableInfoKey;
+
+import java.util.List;
 
 public interface TableInfoMapper {
-    int deleteByPrimaryKey(TableInfoKey key);
-
     int insert(TableInfo record);
 
     int insertSelective(TableInfo record);
 
-    TableInfo selectByPrimaryKey(TableInfoKey key);
-
-    int updateByPrimaryKeySelective(TableInfo record);
-
-    int updateByPrimaryKey(TableInfo record);
+    /**
+     * 查询字段表
+     * @param record 查询条件
+     * @return list
+     */
+    List<TableInfo> getTableInfos(TableInfo record);
 }

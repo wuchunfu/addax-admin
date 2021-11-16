@@ -1,9 +1,25 @@
+/*
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package com.wgzhao.addax.admin.server.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wgzhao.addax.admin.common.ServerResponse;
 import com.wgzhao.addax.admin.config.ConfigConstants;
 import com.wgzhao.addax.admin.dto.EditJsonDto;
@@ -40,7 +56,6 @@ import com.wgzhao.addax.admin.server.TableMainService;
 import com.wgzhao.addax.admin.server.TableService;
 import com.wgzhao.addax.admin.server.TaskService;
 import com.wgzhao.addax.admin.utils.DateUtil;
-import com.wgzhao.addax.admin.utils.HttpUtil;
 import com.wgzhao.addax.admin.utils.RedisUtil;
 import com.wgzhao.addax.admin.utils.UUIDUtil;
 import com.wgzhao.addax.admin.vo.JsonProcessVo;
@@ -49,13 +64,10 @@ import com.wgzhao.addax.admin.vo.JsonVo;
 import com.wgzhao.addax.admin.vo.ProcessTableVo;
 import com.wgzhao.addax.admin.vo.QueryJsonVo;
 import com.wgzhao.addax.admin.vo.UserVo;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -81,7 +93,7 @@ import java.util.stream.Stream;
  */
 @Service
 @Log4j2
-@DependsOn("hsCacheUtils")
+//@DependsOn("hsCacheUtils")
 public class JsonServiceImpl
         implements JsonService
 {
@@ -301,22 +313,23 @@ public class JsonServiceImpl
 
     private boolean callTask(JsonDto jsonDto, TaskInfo taskInfo)
     {
-        String uri = ConfigConstants.taskInfoUrl + taskInfo.getId();
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("sourceTableList", jsonDto.getSourceTableList());
-        paramMap.put("taskId", taskInfo.getId());
-        paramMap.put("partitionFieldList", jsonDto.getPartitionFieldList());
-        String str = HttpUtil.getData(uri, paramMap, "post");
-        if ("接口调用失败".equals(str)) {
-            return true;
-        }
-        JSONObject resultJson = JSON.parseObject(str);
-        String code = resultJson.getString("returnCode");
-        log.info("调用任务请求响应码:{}", code);
-        if (StringUtils.isBlank(code) || code.equals(ResponseEnum.ERROR.getReturnCode())) {
-            return true;
-        }
-        return false;
+        taskService.colInfoStorageTask(taskInfo.getId());
+//        String uri = ConfigConstants.taskInfoUrl + taskInfo.getId();
+//        Map<String, Object> paramMap = new HashMap<>();
+//        paramMap.put("sourceTableList", jsonDto.getSourceTableList());
+//        paramMap.put("taskId", taskInfo.getId());
+//        paramMap.put("partitionFieldList", jsonDto.getPartitionFieldList());
+//        String str = HttpUtil.getData(uri, paramMap, "post");
+//        if ("接口调用失败".equals(str)) {
+//            return true;
+//        }
+//        JSONObject resultJson = JSON.parseObject(str);
+//        String code = resultJson.getString("returnCode");
+//        log.info("调用任务请求响应码:{}", code);
+//        if (StringUtils.isBlank(code) || code.equals(ResponseEnum.ERROR.getReturnCode())) {
+//            return true;
+//        }
+        return true;
     }
 
     @Override
@@ -585,7 +598,7 @@ public class JsonServiceImpl
         Map<String, Object> map = new HashMap<>();
         map.put("${DB}", db);
         map.put("${TABLE}", table);
-        String td = hsCacheNew.get("param.LTD", String.class);
+        String td = redisUtil.get("param.LTD", String.class);
         String cd = DateUtil.parseLocalDateTimeToStr(DateUtil.DATE_FORMAT_YYYYMMDD, LocalDate.now());
         map.put("${TD}", td);
         map.put("${CD}", cd);
@@ -828,7 +841,7 @@ public class JsonServiceImpl
                     }
                 });
                 String[] columnReader =
-                        sourceTableInfoList.stream().map(TableInfoKey::getColName).toArray(String[]::new);
+                        sourceTableInfoList.stream().map(TableInfo::getColName).toArray(String[]::new);
                 readerJson.put("column", columnReader);
                 //处理writer
                 if (!DataBaseTypeEnum.HIVE_HDFS_TYPE.getCode().equals(targetSourceConfig.getDtype())) {
@@ -839,7 +852,7 @@ public class JsonServiceImpl
                         }
                     });
                     String[] columnWriter =
-                            targetTableInfoList.stream().map(TableInfoKey::getColName).toArray(String[]::new);
+                            targetTableInfoList.stream().map(TableInfo::getColName).toArray(String[]::new);
                     writerJson.put("column", columnWriter);
                 }
             }
@@ -859,7 +872,7 @@ public class JsonServiceImpl
             else if (!DataBaseTypeEnum.HIVE_HDFS_TYPE.getCode().equals(sourceConfig.getDtype())) {
                 //reader-column处理
                 String[] columnReader =
-                        readerTableList.stream().map(TableInfoKey::getColName).toArray(String[]::new);
+                        readerTableList.stream().map(TableInfo::getColName).toArray(String[]::new);
                 readerJson.put("column", columnReader);
             }
             //writer-过滤掉已删除的字段信息
@@ -875,7 +888,7 @@ public class JsonServiceImpl
             }
             else if (!DataBaseTypeEnum.HIVE_HDFS_TYPE.getCode().equals(targetSourceConfig.getDtype())) {
                 String[] columnWriter =
-                        writerTableList.stream().map(TableInfoKey::getColName).toArray(String[]::new);
+                        writerTableList.stream().map(TableInfo::getColName).toArray(String[]::new);
                 writerJson.put("column", columnWriter);
             }
         }

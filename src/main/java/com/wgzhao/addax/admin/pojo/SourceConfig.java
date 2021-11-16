@@ -19,7 +19,7 @@ public class SourceConfig {
 
     private String path;
 
-    private String defaultfs;
+    private String defaultFS;
 
     private Integer haveKerberos;
 
@@ -103,110 +103,6 @@ public class SourceConfig {
         this.dstatus = dstatus;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path == null ? null : path.trim();
-    }
-
-    public String getDefaultfs() {
-        return defaultfs;
-    }
-
-    public void setDefaultfs(String defaultfs) {
-        this.defaultfs = defaultfs == null ? null : defaultfs.trim();
-    }
-
-    public Integer getHaveKerberos() {
-        return haveKerberos;
-    }
-
-    public void setHaveKerberos(Integer haveKerberos) {
-        this.haveKerberos = haveKerberos;
-    }
-
-    public String getKerberosKeytabFilePath() {
-        return kerberosKeytabFilePath;
-    }
-
-    public void setKerberosKeytabFilePath(String kerberosKeytabFilePath) {
-        this.kerberosKeytabFilePath = kerberosKeytabFilePath == null ? null : kerberosKeytabFilePath.trim();
-    }
-
-    public String getKerberosPrincipal() {
-        return kerberosPrincipal;
-    }
-
-    public void setKerberosPrincipal(String kerberosPrincipal) {
-        this.kerberosPrincipal = kerberosPrincipal == null ? null : kerberosPrincipal.trim();
-    }
-
-    public String getHadoopConfig() {
-        return hadoopConfig;
-    }
-
-    public void setHadoopConfig(String hadoopConfig) {
-        this.hadoopConfig = hadoopConfig == null ? null : hadoopConfig.trim();
-    }
-
-    public String getHiveUserName() {
-        return hiveUserName;
-    }
-
-    public void setHiveUserName(String hiveUserName) {
-        this.hiveUserName = hiveUserName == null ? null : hiveUserName.trim();
-    }
-
-    public String getHivePass() {
-        return hivePass;
-    }
-
-    public void setHivePass(String hivePass) {
-        this.hivePass = hivePass == null ? null : hivePass.trim();
-    }
-
-    public String getHiveConnectStr() {
-        return hiveConnectStr;
-    }
-
-    public void setHiveConnectStr(String hiveConnectStr) {
-        this.hiveConnectStr = hiveConnectStr == null ? null : hiveConnectStr.trim();
-    }
-
-    public Integer getIsEnableHa() {
-        return isEnableHa;
-    }
-
-    public void setIsEnableHa(Integer isEnableHa) {
-        this.isEnableHa = isEnableHa;
-    }
-
-    public String getNameServices() {
-        return nameServices;
-    }
-
-    public void setNameServices(String nameServices) {
-        this.nameServices = nameServices == null ? null : nameServices.trim();
-    }
-
-    public String getNameNodes() {
-        return nameNodes;
-    }
-
-    public void setNameNodes(String nameNodes) {
-        this.nameNodes = nameNodes == null ? null : nameNodes.trim();
-    }
-
-    public String getNameNodeRpc() {
-        return nameNodeRpc;
-    }
-
-    public void setNameNodeRpc(String nameNodeRpc) {
-        this.nameNodeRpc = nameNodeRpc == null ? null : nameNodeRpc.trim();
-    }
-
     public Date getCtime() {
         return ctime;
     }
@@ -222,4 +118,135 @@ public class SourceConfig {
     public void setMtime(Date mtime) {
         this.mtime = mtime;
     }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+
+    public String getDefaultFS()
+    {
+        return defaultFS;
+    }
+
+    public void setDefaultFS(String defaultFS)
+    {
+        this.defaultFS = defaultFS;
+    }
+
+    public Integer getHaveKerberos()
+    {
+        return haveKerberos;
+    }
+
+    public void setHaveKerberos(Integer haveKerberos)
+    {
+        this.haveKerberos = haveKerberos;
+    }
+
+    public String getKerberosKeytabFilePath()
+    {
+        return kerberosKeytabFilePath;
+    }
+
+    public void setKerberosKeytabFilePath(String kerberosKeytabFilePath)
+    {
+        this.kerberosKeytabFilePath = kerberosKeytabFilePath;
+    }
+
+    public String getKerberosPrincipal()
+    {
+        return kerberosPrincipal;
+    }
+
+    public void setKerberosPrincipal(String kerberosPrincipal)
+    {
+        this.kerberosPrincipal = kerberosPrincipal;
+    }
+
+    public String getHadoopConfig()
+    {
+        return hadoopConfig;
+    }
+
+    public void setHadoopConfig(String hadoopConfig)
+    {
+        this.hadoopConfig = hadoopConfig;
+    }
+
+    public String getHiveUserName()
+    {
+        return hiveUserName;
+    }
+
+    public void setHiveUserName(String hiveUserName)
+    {
+        this.hiveUserName = hiveUserName;
+    }
+
+    public String getHivePass()
+    {
+        return hivePass;
+    }
+
+    public void setHivePass(String hivePass)
+    {
+        this.hivePass = hivePass;
+    }
+
+    public String getHiveConnectStr()
+    {
+        return hiveConnectStr;
+    }
+
+    public void setHiveConnectStr(String hiveConnectStr)
+    {
+        this.hiveConnectStr = hiveConnectStr;
+    }
+
+    public Integer getIsEnableHa()
+    {
+        return isEnableHa;
+    }
+
+    public void setIsEnableHa(Integer enableHa)
+    {
+        isEnableHa = enableHa;
+    }
+
+    public String getNameNodes()
+    {
+        return nameNodes;
+    }
+
+    public void setNameNodes(String nameNodes)
+    {
+        this.nameNodes = nameNodes;
+    }
+
+    public String getNameNodeRpc()
+    {
+        return nameNodeRpc;
+    }
+
+    public void setNameNodeRpc(String nameNodeRpc)
+    {
+        this.nameNodeRpc = nameNodeRpc;
+    }
+
+    public String getNameServices()
+    {
+        return nameServices;
+    }
+
+    public void setNameServices(String nameServices)
+    {
+        this.nameServices = nameServices;
+    }
+
 }

@@ -14,4 +14,6 @@ public interface SourceConfigMapper {
     int updateByPrimaryKeySelective(SourceConfig record);
 
     int updateByPrimaryKey(SourceConfig record);
+
+    SourceConfig selectById(String id);
 }

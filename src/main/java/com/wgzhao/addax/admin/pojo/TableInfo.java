@@ -1,6 +1,14 @@
 package com.wgzhao.addax.admin.pojo;
 
-public class TableInfo extends TableInfoKey {
+public class TableInfo {
+    private String sourceId;
+
+    private String dbName;
+
+    private String tblName;
+
+    private String colName;
+
     private String colType;
 
     private Integer colLength;
@@ -9,15 +17,39 @@ public class TableInfo extends TableInfoKey {
 
     private Integer colPos;
 
-    private Integer isNull;
-
-    private String colNotes;
-
     private Integer colDelStatus;
 
-    private String tableMainId;
+    public String getSourceId() {
+        return sourceId;
+    }
 
-    private String createTableType;
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId == null ? null : sourceId.trim();
+    }
+
+    public String getDbName() {
+        return dbName;
+    }
+
+    public void setDbName(String dbName) {
+        this.dbName = dbName == null ? null : dbName.trim();
+    }
+
+    public String getTblName() {
+        return tblName;
+    }
+
+    public void setTblName(String tblName) {
+        this.tblName = tblName == null ? null : tblName.trim();
+    }
+
+    public String getColName() {
+        return colName;
+    }
+
+    public void setColName(String colName) {
+        this.colName = colName == null ? null : colName.trim();
+    }
 
     public String getColType() {
         return colType;
@@ -51,43 +83,13 @@ public class TableInfo extends TableInfoKey {
         this.colPos = colPos;
     }
 
-    public Integer getIsNull() {
-        return isNull;
-    }
-
-    public void setIsNull(Integer isNull) {
-        this.isNull = isNull;
-    }
-
-    public String getColNotes() {
-        return colNotes;
-    }
-
-    public void setColNotes(String colNotes) {
-        this.colNotes = colNotes == null ? null : colNotes.trim();
-    }
-
-    public Integer getColDelStatus() {
+    public Integer getColDelStatus()
+    {
         return colDelStatus;
     }
 
-    public void setColDelStatus(Integer colDelStatus) {
+    public void setColDelStatus(Integer colDelStatus)
+    {
         this.colDelStatus = colDelStatus;
-    }
-
-    public String getTableMainId() {
-        return tableMainId;
-    }
-
-    public void setTableMainId(String tableMainId) {
-        this.tableMainId = tableMainId == null ? null : tableMainId.trim();
-    }
-
-    public String getCreateTableType() {
-        return createTableType;
-    }
-
-    public void setCreateTableType(String createTableType) {
-        this.createTableType = createTableType == null ? null : createTableType.trim();
     }
 }

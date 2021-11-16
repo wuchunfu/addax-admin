@@ -2,7 +2,8 @@ package com.wgzhao.addax.admin.pojo;
 
 import java.util.Date;
 
-public class SubTaskInfo {
+public class SubTaskInfo
+{
     private String id;
 
     private String sourceId;
@@ -37,21 +38,11 @@ public class SubTaskInfo {
 
     private String taskId;
 
-    private Integer collectType;
-
     private Date ctime;
 
     private Date mtime;
 
-    public Integer getCollectType()
-    {
-        return collectType;
-    }
-
-    public void setCollectType(Integer collectType)
-    {
-        this.collectType = collectType;
-    }
+    private Integer collectType;
 
     public String getId() {
         return id;
@@ -203,5 +194,10 @@ public class SubTaskInfo {
 
     public void setMtime(Date mtime) {
         this.mtime = mtime;
+    }
+
+    public void setCollectType(Integer collectionType)
+    {
+        this.collectType = collectionType;
     }
 }
