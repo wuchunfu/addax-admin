@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wgzhao.addax.admin.mapper.UserCustomMapper">
+    <resultMap id="BaseResultMap" type="com.wgzhao.addax.admin.pojo.User">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="pass" property="pass" jdbcType="VARCHAR" />
+        <result column="utype" property="utype" jdbcType="INTEGER" />
+        <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+        <result column="mtime" property="mtime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, username, pass, utype, ctime, mtime
+  </sql>
+    <select id="checkUserName" resultType="java.lang.Integer">
+        select count(1) from t_user where username = #{userName}
+    </select>
+    <select id="login" resultType="com.wgzhao.addax.admin.pojo.User">
+        select
+        <include refid="Base_Column_List" />
+        from t_user where username = #{userName} and pass = #{userPass}
+    </select>
+    <select id="queryUserListWithPage" resultType="com.wgzhao.addax.admin.vo.QueryUserVo">
+        SELECT username userName,utype roleType FROM t_user ORDER BY ctime DESC
+    </select>
+
+</mapper>

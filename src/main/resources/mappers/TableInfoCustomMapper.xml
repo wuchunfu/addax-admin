@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wgzhao.addax.admin.mapper.TableInfoCustomMapper">
+    <resultMap id="BaseResultMap" type="com.wgzhao.addax.admin.pojo.TableInfo">
+        <id column="source_id" property="sourceId" jdbcType="VARCHAR" />
+        <id column="db_name" property="dbName" jdbcType="VARCHAR" />
+        <id column="col_name" property="colName" jdbcType="VARCHAR" />
+        <id column="tbl_name" property="tblName" jdbcType="VARCHAR" />
+        <id column="sub_task_id" property="subTaskId" jdbcType="VARCHAR" />
+        <result column="col_type" property="colType" jdbcType="VARCHAR" />
+        <result column="col_length" property="colLength" jdbcType="INTEGER" />
+        <result column="col_precision" property="colPrecision" jdbcType="INTEGER" />
+        <result column="col_pos" property="colPos" jdbcType="INTEGER" />
+        <result column="is_null" property="isNull" jdbcType="INTEGER" />
+        <result column="col_notes" property="colNotes" jdbcType="VARCHAR" />
+        <result column="col_del_status" property="colDelStatus" jdbcType="INTEGER" />
+        <result column="table_main_id" property="tableMainId" jdbcType="VARCHAR" />
+        <result column="create_table_type" property="createTableType" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    source_id, db_name, col_name, tbl_name, sub_task_id, col_type, col_length, col_precision,
+    col_pos, is_null, col_notes, col_del_status, table_main_id, create_table_type
+  </sql>
+    <select id="getAllTableInfoList" resultType="com.wgzhao.addax.admin.pojo.TableInfo">
+      SELECT
+          source_id sourceId,
+          db_name dbName,
+          tbl_name tblName,
+          col_name colName,
+          col_type colType,
+          col_length colLength,
+          col_precision colPrecision,
+          col_pos colPos
+      FROM
+          t_table_info
+      WHERE
+          source_id = #{sourceConfigId,jdbcType=VARCHAR}
+          AND db_name = #{sourceTableSchema,jdbcType=VARCHAR}
+          AND tbl_name = #{sourceTableName,jdbcType=VARCHAR}
+      ORDER BY col_pos ASC
+  </select>
+    <select id="queryAllSourceConfigs" resultType="com.wgzhao.addax.admin.vo.TreeNodeVo">
+    SELECT
+        t.source_id nodeCode,
+        s.`name` nodeName,
+        NULL parentCode
+    FROM
+        t_table_info t
+        LEFT JOIN t_source_config s ON t.source_id = s.id
+    GROUP BY
+        t.source_id UNION ALL
+    SELECT
+        CONCAT(t.source_id,t.db_name) nodeCode,
+        t.db_name nodeName,
+        t.source_id parentCode
+    FROM
+        t_table_info t
+    GROUP BY
+        t.source_id,
+        t.db_name
+    UNION ALL
+    SELECT
+        CONCAT(t.source_id,t.db_name,t.tbl_name) nodeCode,
+        t.tbl_name nodeName,
+        CONCAT(t.source_id,t.db_name) parentCode
+    FROM
+        t_table_info t
+    GROUP BY
+        t.source_id,
+        t.db_name,
+        t.tbl_name
+    </select>
+    <select id="getTableInfoByNodeCode" resultType="com.wgzhao.addax.admin.vo.TableInfoVo">
+        SELECT
+            t.source_id sourceId,
+            t.db_name dbName,
+            t.tbl_name tblName,
+            t.col_name colName,
+            t.col_type colType,
+            t.col_length colLength,
+            t.col_precision colPrecision,
+            t.is_null isNull,
+            t.col_notes colNotes
+        FROM
+            t_table_info t
+        WHERE
+            CONCAT(t.source_id,t.db_name,t.tbl_name) = #{nodeCode,jdbcType=VARCHAR}
+            AND t.col_del_status = 1
+        ORDER BY t.col_pos ASC
+    </select>
+    <select id="getTableInfoBySubTaskId" resultMap="BaseResultMap">
+        SELECT
+            t.source_id,
+            t.db_name,
+            t.col_name,
+            t.tbl_name,
+            t.sub_task_id,
+            t.col_type,
+            t.col_length,
+            t.col_precision,
+            t.col_pos,
+            t.is_null,
+            t.col_notes,
+            t.col_del_status,
+            t.table_main_id,
+            t.create_table_type
+        FROM
+            t_table_info t
+        WHERE t.sub_task_id = #{subTaskId,jdbcType=VARCHAR}
+        AND t.source_id = #{sourceId,jdbcType=VARCHAR}
+        AND t.db_name = #{db,jdbcType=VARCHAR}
+        AND t.tbl_name = #{tbl,jdbcType=VARCHAR}
+        ORDER BY t.col_pos ASC
+    </select>
+
+</mapper>

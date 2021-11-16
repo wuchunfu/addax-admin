@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wgzhao.addax.admin.mapper.JsonRelationInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.wgzhao.addax.admin.pojo.JsonRelationInfo" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="source_id" property="sourceId" jdbcType="VARCHAR" />
+    <result column="source_db" property="sourceDb" jdbcType="VARCHAR" />
+    <result column="source_tbl" property="sourceTbl" jdbcType="VARCHAR" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+    <result column="target_db" property="targetDb" jdbcType="VARCHAR" />
+    <result column="target_tbl" property="targetTbl" jdbcType="VARCHAR" />
+    <result column="jid" property="jid" jdbcType="VARCHAR" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+    <result column="mtime" property="mtime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, source_id, source_db, source_tbl, target_id, target_db, target_tbl, jid, ctime, 
+    mtime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_json_relation_info
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_json_relation_info
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.wgzhao.addax.admin.pojo.JsonRelationInfo" >
+    insert into t_json_relation_info (id, source_id, source_db, 
+      source_tbl, target_id, target_db, 
+      target_tbl, jid, ctime, 
+      mtime)
+    values (#{id,jdbcType=VARCHAR}, #{sourceId,jdbcType=VARCHAR}, #{sourceDb,jdbcType=VARCHAR}, 
+      #{sourceTbl,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR}, #{targetDb,jdbcType=VARCHAR}, 
+      #{targetTbl,jdbcType=VARCHAR}, #{jid,jdbcType=VARCHAR}, #{ctime,jdbcType=TIMESTAMP}, 
+      #{mtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.wgzhao.addax.admin.pojo.JsonRelationInfo" >
+    insert into t_json_relation_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="sourceId != null" >
+        source_id,
+      </if>
+      <if test="sourceDb != null" >
+        source_db,
+      </if>
+      <if test="sourceTbl != null" >
+        source_tbl,
+      </if>
+      <if test="targetId != null" >
+        target_id,
+      </if>
+      <if test="targetDb != null" >
+        target_db,
+      </if>
+      <if test="targetTbl != null" >
+        target_tbl,
+      </if>
+      <if test="jid != null" >
+        jid,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+      <if test="mtime != null" >
+        mtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceId != null" >
+        #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceDb != null" >
+        #{sourceDb,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTbl != null" >
+        #{sourceTbl,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="targetDb != null" >
+        #{targetDb,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTbl != null" >
+        #{targetTbl,jdbcType=VARCHAR},
+      </if>
+      <if test="jid != null" >
+        #{jid,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mtime != null" >
+        #{mtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wgzhao.addax.admin.pojo.JsonRelationInfo" >
+    update t_json_relation_info
+    <set >
+      <if test="sourceId != null" >
+        source_id = #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceDb != null" >
+        source_db = #{sourceDb,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceTbl != null" >
+        source_tbl = #{sourceTbl,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="targetDb != null" >
+        target_db = #{targetDb,jdbcType=VARCHAR},
+      </if>
+      <if test="targetTbl != null" >
+        target_tbl = #{targetTbl,jdbcType=VARCHAR},
+      </if>
+      <if test="jid != null" >
+        jid = #{jid,jdbcType=VARCHAR},
+      </if>
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="mtime != null" >
+        mtime = #{mtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wgzhao.addax.admin.pojo.JsonRelationInfo" >
+    update t_json_relation_info
+    set source_id = #{sourceId,jdbcType=VARCHAR},
+      source_db = #{sourceDb,jdbcType=VARCHAR},
+      source_tbl = #{sourceTbl,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=VARCHAR},
+      target_db = #{targetDb,jdbcType=VARCHAR},
+      target_tbl = #{targetTbl,jdbcType=VARCHAR},
+      jid = #{jid,jdbcType=VARCHAR},
+      ctime = #{ctime,jdbcType=TIMESTAMP},
+      mtime = #{mtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

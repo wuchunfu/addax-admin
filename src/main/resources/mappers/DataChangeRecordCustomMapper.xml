@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wgzhao.addax.admin.mapper.DataChangeRecordCustomMapper">
+    <resultMap id="BaseResultMap" type="com.wgzhao.addax.admin.pojo.DataChangeRecord">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="source_id" property="sourceId" jdbcType="VARCHAR" />
+        <result column="db_name" property="dbName" jdbcType="VARCHAR" />
+        <result column="tbl_name" property="tblName" jdbcType="VARCHAR" />
+        <result column="col_name" property="colName" jdbcType="VARCHAR" />
+        <result column="change_type" property="changeType" jdbcType="INTEGER" />
+        <result column="change_time" property="changeTime" jdbcType="TIMESTAMP" />
+        <result column="change_content" property="changeContent" jdbcType="VARCHAR" />
+        <result column="sql_content" property="sqlContent" jdbcType="VARCHAR" />
+        <result column="target_table_status" property="targetTableStatus" jdbcType="INTEGER" />
+        <result column="json_status" property="jsonStatus" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, source_id, db_name, tbl_name, col_name, change_type, change_time, change_content, 
+    sql_content, target_table_status, json_status
+  </sql>
+    <select id="queryChangeRecordListWithPage" resultType="com.wgzhao.addax.admin.vo.QueryChangeRecordVo">
+        SELECT
+        s.`name` sourceName,
+        d.db_name dbName,
+        d.tbl_name tblName,
+        d.change_type changeType,
+        CASE
+        d.change_type
+        WHEN 1 THEN
+        '新增'
+        WHEN 2 THEN
+        '删除'
+        WHEN 3 THEN
+        '修改'
+        ELSE '失败'
+        END changeTypeDesc,
+        d.change_time changeTime,
+        d.change_content changeContent,
+        d.sql_content sqlContent,
+        d.target_table_status targetTableStatus,
+        CASE
+        d.target_table_status
+        WHEN 1 THEN
+        '成功'
+        WHEN 2 THEN
+        '失败' ELSE '未完成'
+        END targetTableStatusDesc,
+        d.json_status jsonStatus,
+        CASE
+        d.json_status
+        WHEN 1 THEN
+        '成功'
+        WHEN 2 THEN
+        '失败' ELSE '未完成'
+        END jsonStatusDesc
+        FROM
+        t_data_change_record d
+        LEFT JOIN t_source_config s ON d.source_id = s.id
+        <where>
+            <if test="queryContent != null and queryContent != ''">
+                AND (s.`name` like #{queryContent,jdbcType=VARCHAR}
+                OR d.db_name like #{queryContent,jdbcType=VARCHAR}
+                OR d.tbl_name like #{queryContent,jdbcType=VARCHAR})
+            </if>
+            <if test="changeType != null">
+                AND d.change_type = #{changeType,jdbcType=INTEGER}
+            </if>
+            <if test="startTime != null">
+                AND d.change_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND d.change_time &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+    <select id="getRecordsByBeginAndEndTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_data_change_record
+        where change_time &gt;= #{beginTime}
+        AND change_time &lt;= #{endTime}
+        AND col_name is not null
+        ORDER BY change_time ASC
+    </select>
+    <select id="getUpdateTimeByNodeCode" resultType="java.util.Date">
+        SELECT
+            MAX( t.change_time )
+        FROM
+            t_data_change_record t
+        WHERE
+            CONCAT( t.source_id, t.db_name, t.tbl_name ) = #{nodeCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

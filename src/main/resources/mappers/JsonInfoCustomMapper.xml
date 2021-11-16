@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wgzhao.addax.admin.mapper.JsonInfoCustomMapper">
+    <resultMap id="BaseResultMap" type="com.wgzhao.addax.admin.pojo.JsonInfo">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="uid" property="uid" jdbcType="VARCHAR" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+        <result column="mtime" property="mtime" jdbcType="TIMESTAMP" />
+        <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+        <result column="sub_task_id" property="subTaskId" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, name, uid, title, content, ctime, mtime, task_id, sub_task_id
+  </sql>
+    <select id="queryJsonListWithPage" resultType="com.wgzhao.addax.admin.vo.QueryJsonVo">
+        SELECT
+        j.id jsonId,
+        j.`name` jsonName,
+        u.username userName,
+        j.title jsonDesc,
+        j.content json,
+        IFNULL(j.mtime,j.ctime) createTime
+        FROM
+        t_json_info j
+        LEFT JOIN t_user u ON j.uid = u.id
+        <where>
+            <if test="jsonName != null and jsonName != ''">
+                AND j.`name` like #{jsonName,jdbcType=VARCHAR}
+            </if>
+            <if test="userName != null and userName != ''">
+                AND u.username like #{userName,jdbcType=VARCHAR}
+            </if>
+            <if test="startTime != null">
+                AND j.ctime &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND j.ctime &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY j.mtime DESC,j.ctime DESC
+    </select>
+    <select id="getJsonListByTaskId" resultType="com.wgzhao.addax.admin.pojo.JsonInfo">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_json_info WHERE task_id = #{taskId,jdbcType=VARCHAR}
+    </select>
+    <select id="getJsonAndUserListByTaskId" resultType="com.wgzhao.addax.admin.vo.JsonVo">
+        SELECT
+            j.id jsonId,
+            j.`name` jsonName,
+            u.username userName,
+            j.content json
+        FROM
+            t_json_info j
+            LEFT JOIN t_user u ON u.id = j.uid
+        WHERE
+            j.task_id = #{taskId,jdbcType=VARCHAR}
+    </select>
+    <select id="getNeedUpdateList" resultType="com.wgzhao.addax.admin.vo.JsonTaskVo">
+        SELECT
+            s.source_id sourceId,
+            s.source_db sourceDb,
+            s.source_tbl sourceTbl,
+            s.target_id targetId,
+            s.target_db targetDb,
+            s.target_tbl targetTbl,
+            s.id subTaskId,
+            j.id jsonId,
+            j.content jsonContent,
+            s.collect_type collectType
+        FROM
+            t_sub_task_info s
+            LEFT JOIN t_json_info j ON s.id = j.sub_task_id
+        WHERE
+            s.source_id = #{sourceId,jdbcType=VARCHAR}
+            AND s.source_db = #{dbName,jdbcType=VARCHAR}
+            AND s.source_tbl = #{tblName,jdbcType=VARCHAR}
+    </select>
+</mapper>

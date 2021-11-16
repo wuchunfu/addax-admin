@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wgzhao.addax.admin.mapper.TableInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.wgzhao.addax.admin.pojo.TableInfo" >
+    <id column="source_id" property="sourceId" jdbcType="VARCHAR" />
+    <id column="db_name" property="dbName" jdbcType="VARCHAR" />
+    <id column="col_name" property="colName" jdbcType="VARCHAR" />
+    <id column="tbl_name" property="tblName" jdbcType="VARCHAR" />
+    <id column="sub_task_id" property="subTaskId" jdbcType="VARCHAR" />
+    <result column="col_type" property="colType" jdbcType="VARCHAR" />
+    <result column="col_length" property="colLength" jdbcType="INTEGER" />
+    <result column="col_precision" property="colPrecision" jdbcType="INTEGER" />
+    <result column="col_pos" property="colPos" jdbcType="INTEGER" />
+    <result column="is_null" property="isNull" jdbcType="INTEGER" />
+    <result column="col_notes" property="colNotes" jdbcType="VARCHAR" />
+    <result column="col_del_status" property="colDelStatus" jdbcType="INTEGER" />
+    <result column="table_main_id" property="tableMainId" jdbcType="VARCHAR" />
+    <result column="create_table_type" property="createTableType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    source_id, db_name, col_name, tbl_name, sub_task_id, col_type, col_length, col_precision, 
+    col_pos, is_null, col_notes, col_del_status, table_main_id, create_table_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.wgzhao.addax.admin.pojo.TableInfoKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_table_info
+    where source_id = #{sourceId,jdbcType=VARCHAR}
+      and db_name = #{dbName,jdbcType=VARCHAR}
+      and col_name = #{colName,jdbcType=VARCHAR}
+      and tbl_name = #{tblName,jdbcType=VARCHAR}
+      and sub_task_id = #{subTaskId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.wgzhao.addax.admin.pojo.TableInfoKey" >
+    delete from t_table_info
+    where source_id = #{sourceId,jdbcType=VARCHAR}
+      and db_name = #{dbName,jdbcType=VARCHAR}
+      and col_name = #{colName,jdbcType=VARCHAR}
+      and tbl_name = #{tblName,jdbcType=VARCHAR}
+      and sub_task_id = #{subTaskId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.wgzhao.addax.admin.pojo.TableInfo" >
+    insert into t_table_info (source_id, db_name, col_name, 
+      tbl_name, sub_task_id, col_type, 
+      col_length, col_precision, col_pos, 
+      is_null, col_notes, col_del_status, 
+      table_main_id, create_table_type)
+    values (#{sourceId,jdbcType=VARCHAR}, #{dbName,jdbcType=VARCHAR}, #{colName,jdbcType=VARCHAR}, 
+      #{tblName,jdbcType=VARCHAR}, #{subTaskId,jdbcType=VARCHAR}, #{colType,jdbcType=VARCHAR}, 
+      #{colLength,jdbcType=INTEGER}, #{colPrecision,jdbcType=INTEGER}, #{colPos,jdbcType=INTEGER}, 
+      #{isNull,jdbcType=INTEGER}, #{colNotes,jdbcType=VARCHAR}, #{colDelStatus,jdbcType=INTEGER}, 
+      #{tableMainId,jdbcType=VARCHAR}, #{createTableType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.wgzhao.addax.admin.pojo.TableInfo" >
+    insert into t_table_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sourceId != null" >
+        source_id,
+      </if>
+      <if test="dbName != null" >
+        db_name,
+      </if>
+      <if test="colName != null" >
+        col_name,
+      </if>
+      <if test="tblName != null" >
+        tbl_name,
+      </if>
+      <if test="subTaskId != null" >
+        sub_task_id,
+      </if>
+      <if test="colType != null" >
+        col_type,
+      </if>
+      <if test="colLength != null" >
+        col_length,
+      </if>
+      <if test="colPrecision != null" >
+        col_precision,
+      </if>
+      <if test="colPos != null" >
+        col_pos,
+      </if>
+      <if test="isNull != null" >
+        is_null,
+      </if>
+      <if test="colNotes != null" >
+        col_notes,
+      </if>
+      <if test="colDelStatus != null" >
+        col_del_status,
+      </if>
+      <if test="tableMainId != null" >
+        table_main_id,
+      </if>
+      <if test="createTableType != null" >
+        create_table_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sourceId != null" >
+        #{sourceId,jdbcType=VARCHAR},
+      </if>
+      <if test="dbName != null" >
+        #{dbName,jdbcType=VARCHAR},
+      </if>
+      <if test="colName != null" >
+        #{colName,jdbcType=VARCHAR},
+      </if>
+      <if test="tblName != null" >
+        #{tblName,jdbcType=VARCHAR},
+      </if>
+      <if test="subTaskId != null" >
+        #{subTaskId,jdbcType=VARCHAR},
+      </if>
+      <if test="colType != null" >
+        #{colType,jdbcType=VARCHAR},
+      </if>
+      <if test="colLength != null" >
+        #{colLength,jdbcType=INTEGER},
+      </if>
+      <if test="colPrecision != null" >
+        #{colPrecision,jdbcType=INTEGER},
+      </if>
+      <if test="colPos != null" >
+        #{colPos,jdbcType=INTEGER},
+      </if>
+      <if test="isNull != null" >
+        #{isNull,jdbcType=INTEGER},
+      </if>
+      <if test="colNotes != null" >
+        #{colNotes,jdbcType=VARCHAR},
+      </if>
+      <if test="colDelStatus != null" >
+        #{colDelStatus,jdbcType=INTEGER},
+      </if>
+      <if test="tableMainId != null" >
+        #{tableMainId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTableType != null" >
+        #{createTableType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wgzhao.addax.admin.pojo.TableInfo" >
+    update t_table_info
+    <set >
+      <if test="colType != null" >
+        col_type = #{colType,jdbcType=VARCHAR},
+      </if>
+      <if test="colLength != null" >
+        col_length = #{colLength,jdbcType=INTEGER},
+      </if>
+      <if test="colPrecision != null" >
+        col_precision = #{colPrecision,jdbcType=INTEGER},
+      </if>
+      <if test="colPos != null" >
+        col_pos = #{colPos,jdbcType=INTEGER},
+      </if>
+      <if test="isNull != null" >
+        is_null = #{isNull,jdbcType=INTEGER},
+      </if>
+      <if test="colNotes != null" >
+        col_notes = #{colNotes,jdbcType=VARCHAR},
+      </if>
+      <if test="colDelStatus != null" >
+        col_del_status = #{colDelStatus,jdbcType=INTEGER},
+      </if>
+      <if test="tableMainId != null" >
+        table_main_id = #{tableMainId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTableType != null" >
+        create_table_type = #{createTableType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where source_id = #{sourceId,jdbcType=VARCHAR}
+      and db_name = #{dbName,jdbcType=VARCHAR}
+      and col_name = #{colName,jdbcType=VARCHAR}
+      and tbl_name = #{tblName,jdbcType=VARCHAR}
+      and sub_task_id = #{subTaskId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wgzhao.addax.admin.pojo.TableInfo" >
+    update t_table_info
+    set col_type = #{colType,jdbcType=VARCHAR},
+      col_length = #{colLength,jdbcType=INTEGER},
+      col_precision = #{colPrecision,jdbcType=INTEGER},
+      col_pos = #{colPos,jdbcType=INTEGER},
+      is_null = #{isNull,jdbcType=INTEGER},
+      col_notes = #{colNotes,jdbcType=VARCHAR},
+      col_del_status = #{colDelStatus,jdbcType=INTEGER},
+      table_main_id = #{tableMainId,jdbcType=VARCHAR},
+      create_table_type = #{createTableType,jdbcType=VARCHAR}
+    where source_id = #{sourceId,jdbcType=VARCHAR}
+      and db_name = #{dbName,jdbcType=VARCHAR}
+      and col_name = #{colName,jdbcType=VARCHAR}
+      and tbl_name = #{tblName,jdbcType=VARCHAR}
+      and sub_task_id = #{subTaskId,jdbcType=VARCHAR}
+  </update>
+</mapper>

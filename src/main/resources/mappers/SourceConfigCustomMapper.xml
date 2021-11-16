@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wgzhao.addax.admin.mapper.SourceConfigCustomMapper">
+    <resultMap id="BaseResultMap" type="com.wgzhao.addax.admin.pojo.SourceConfig">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="user" property="user" jdbcType="VARCHAR" />
+        <result column="pass" property="pass" jdbcType="VARCHAR" />
+        <result column="dsn" property="dsn" jdbcType="VARCHAR" />
+        <result column="dtype" property="dtype" jdbcType="INTEGER" />
+        <result column="dstatus" property="dstatus" jdbcType="INTEGER" />
+        <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+        <result column="mtime" property="mtime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, name, user, pass, dsn, dtype, dstatus, ctime, mtime
+  </sql>
+    <select id="querySourceConfigListWithPage" resultType="com.wgzhao.addax.admin.vo.QuerySourceConfigVo">
+        SELECT
+        s.id sourceConfigId,
+        s.`name` sourceConfigName,
+        s.`user` sourceConfigUserName,
+        s.dtype sourceConfigType,
+        s.pass,
+        s.dsn jdbcUrl,
+        s.mtime updateTime,
+        s.path path,
+        s.defaultFS defaultFS,
+        s.have_kerberos haveKerberos,
+        s.kerberos_keytab_file_path kerberosKeytabFilePath,
+        s.kerberos_principal kerberosPrincipal,
+        s.hive_connect_str hiveConnectStr,
+        s.hive_user_name hiveUserName,
+        s.hive_pass hivePass,
+        s.is_enable_ha isEnableHa,
+        s.name_services nameServices,
+        s.name_nodes nameNodes,
+        s.name_node_rpc nameNodeRpc
+        FROM
+        t_source_config s
+        <where>
+            <if test="sourceConfigName != null and sourceConfigName != ''">
+                AND s.`name` like #{sourceConfigName,jdbcType=VARCHAR}
+            </if>
+            <if
+                    test="sourceConfigType != null and (sourceConfigType == 7 or sourceConfigType == 8 or sourceConfigType == 9)">
+                AND s.dtype = #{sourceConfigType,jdbcType=INTEGER}
+            </if>
+            <if test="sourceConfigType != null and sourceConfigType == -1">
+                AND (s.dtype = 1 OR s.dtype = 2 OR s.dtype = 3 OR s.dtype = 4 OR s.dtype = 5 OR
+                s.dtype = 6)
+            </if>
+            AND s.dstatus = 1
+        </where>
+        ORDER BY
+        s.mtime DESC
+    </select>
+    <select id="getAllSourceConfig" resultType="com.wgzhao.addax.admin.vo.SourceConfigSelectVo">
+        SELECT id sourceConfigId,
+        `name` sourceConfigName,
+        dtype dataBaseType
+         FROM t_source_config WHERE
+        dstatus = 1
+    </select>
+    <select id="selectBySourceCongigId" resultType="com.wgzhao.addax.admin.vo.SourceConfigVo">
+        SELECT id sourceConfigId,
+        `name` sourceConfigName,
+         dtype dataBaseType,
+         path,
+         defaultFS,
+         have_kerberos haveKerberos,
+         kerberos_keytab_file_path kerberosKeytabFilePath,
+         kerberos_principal kerberosPrincipal,
+         hadoop_config hadoopConfig
+         FROM t_source_config
+         <where>
+             <if test="sId != null and sId != ''">
+                 id =  #{sId,jdbcType=VARCHAR}
+             </if>
+         </where>
+
+    </select>
+
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wgzhao.addax.admin.mapper.SubTaskInfoCustomMapper">
+    <resultMap id="BaseResultMap" type="com.wgzhao.addax.admin.pojo.SubTaskInfo">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="source_id" property="sourceId" jdbcType="VARCHAR" />
+        <result column="source_db" property="sourceDb" jdbcType="VARCHAR" />
+        <result column="source_tbl" property="sourceTbl" jdbcType="VARCHAR" />
+        <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+        <result column="target_db" property="targetDb" jdbcType="VARCHAR" />
+        <result column="target_tbl" property="targetTbl" jdbcType="VARCHAR" />
+        <result column="is_add_target_tbl" property="isAddTargetTbl" jdbcType="INTEGER" />
+        <result column="add_target_tbl_status" property="addTargetTblStatus" jdbcType="INTEGER" />
+        <result column="add_target_tbl_reason" property="addTargetTblReason" jdbcType="VARCHAR" />
+        <result column="add_field_status" property="addFieldStatus" jdbcType="INTEGER" />
+        <result column="add_field_reason" property="addFieldReason" jdbcType="VARCHAR" />
+        <result column="add_json_status" property="addJsonStatus" jdbcType="INTEGER" />
+        <result column="add_json_reason" property="addJsonReason" jdbcType="VARCHAR" />
+        <result column="target_mapping_status" property="targetMappingStatus" jdbcType="INTEGER" />
+        <result column="target_mapping_reason" property="targetMappingReason" jdbcType="VARCHAR" />
+        <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+        <result column="collect_type" property="collectType" jdbcType="INTEGER" />
+        <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+        <result column="mtime" property="mtime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, source_id, source_db, source_tbl, target_id, target_db, target_tbl, is_add_target_tbl,
+    add_target_tbl_status, add_target_tbl_reason, add_field_status, add_field_reason,
+    add_json_status, add_json_reason, target_mapping_status, target_mapping_reason, task_id,
+    collect_type,
+    ctime, mtime
+  </sql>
+    <select id="getNotFinishedCountByTaskId" resultType="java.lang.Integer">
+        SELECT
+            COUNT( 1 )
+        FROM
+            t_sub_task_info s
+        WHERE
+            s.task_id =  #{taskId,jdbcType=VARCHAR}
+            AND ( s.add_target_tbl_status = 0 OR s.add_field_status = 0 OR s.add_json_status =0
+            OR s.target_mapping_status = 0)
+             AND ( s.add_target_tbl_status != 2 AND s.add_field_status !=2 AND s.add_json_status !=2
+             AND s.target_mapping_status != 2)
+    </select>
+    <select id="getAllJsonProcessByTaskId" resultType="com.wgzhao.addax.admin.vo.ProcessTableVo">
+         SELECT
+            s.source_db sourceTableSchema,
+            s.source_tbl sourceTableName,
+            s.target_db targetTableSchema,
+            s.target_tbl targetTableName,
+            s.is_add_target_tbl isAddTargetTableFlag,
+       IF
+            (
+                (s.add_target_tbl_status = 2
+                OR s.add_field_status = 2
+                OR s.add_json_status = 2
+                OR s.target_mapping_status = 2),
+                1,
+            IF
+                (( s.add_target_tbl_status = 1 AND s.add_field_status = 1 AND s.add_json_status =
+                 1 AND s.target_mapping_status = 1), 2, 0 )
+            ) resultStatus,
+            IFNULL(s.add_target_tbl_reason,IFNULL(s.add_field_reason,IFNULL(s.add_json_reason,s.target_mapping_reason)))
+            failReason
+        FROM
+            t_sub_task_info s
+        WHERE
+            s.task_id = #{taskId,jdbcType=VARCHAR}
+    </select>
+    <select id="querySubTaskListWithPage" resultType="com.wgzhao.addax.admin.vo.QuerySubTaskVo">
+        SELECT
+        t.id subTaskId,
+        s.source_db sourceTableSchema,
+        s.source_tbl sourceTableName,
+        s.target_db targetTableSchema,
+        s.target_tbl targetTableName,
+        s.is_add_target_tbl isAddTargetTableFlag,
+        s.ctime beginTime,
+        s.mtime updateTime,
+        IF
+        (
+        (s.add_target_tbl_status = 2
+        OR s.add_field_status = 2
+        OR s.add_json_status = 2
+        OR s.target_mapping_status = 2),
+        2,
+        IF
+        (( s.add_target_tbl_status = 1 AND s.add_field_status = 1 AND s.add_json_status = 1 AND
+        target_mapping_status =1), 1,
+        0 )
+        ) resultStatus,
+        IFNULL( s.add_target_tbl_reason, IFNULL( s.add_field_reason, IFNULL(s.add_json_reason,s.target_mapping_reason)
+        ) ) failReason
+        FROM
+        t_sub_task_info s
+        LEFT JOIN t_task_info t ON s.task_id = t.id
+        <where>
+            and t.uid = #{userId,jdbcType=VARCHAR}
+            <if test="dto.subTaskId != null and dto.subTaskId != ''">
+                AND t.id LIKE #{dto.subTaskId,jdbcType=VARCHAR}
+            </if>
+            <if test="dto.tableSchema != null and dto.tableSchema != ''">
+                AND (s.source_db LIKE #{dto.tableSchema,jdbcType=VARCHAR} OR s.target_db LIKE #{dto.tableSchema,jdbcType=VARCHAR})
+            </if>
+            <if test="dto.tableName != null and dto.tableName != ''">
+                AND (s.source_tbl LIKE #{dto.tableName,jdbcType=VARCHAR} OR s.target_tbl LIKE #{dto.tableName,jdbcType=VARCHAR} )
+            </if>
+            <if test="dto.resultStatus != null and dto.resultStatus == 0">
+                AND (s.add_target_tbl_status = 0 OR s.add_field_status = 0 OR s.add_json_status = 0)
+                AND (s.add_target_tbl_status != 2 AND s.add_field_status != 2 AND s.add_json_status
+                != 2)
+            </if>
+            <if test="dto.resultStatus != null and dto.resultStatus == 1">
+                AND s.add_target_tbl_status = 1 AND s.add_field_status = 1 AND s.add_json_status = 1
+            </if>
+            <if test="dto.resultStatus != null and dto.resultStatus == 2">
+                AND (s.add_target_tbl_status = 2 OR s.add_field_status = 2 OR s.add_json_status = 2)
+            </if>
+            <if test="dto.startTime !=null">
+                AND s.ctime &gt;= #{dto.startTime}
+            </if>
+            <if test="dto.endTime != null">
+                AND s.mtime &lt;= #{dto.endTime}
+            </if>
+        </where>
+        ORDER BY
+        s.ctime DESC
+    </select>
+    <select id="findAllByTaskId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from t_sub_task_info
+        where task_id = #{taskId,jdbcType=VARCHAR}
+        order by id,task_id,ctime
+    </select>
+</mapper>
