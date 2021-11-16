@@ -35,10 +35,8 @@ public class ExceptionHandler
 //        return ExceptionResponse.createByErrorCodeMessage(ResponseEnum.SYSTEM_ERROR.getReturnCode(), ResponseEnum.SYSTEM_ERROR.getReturnMsg());
 //    }
 
-    /**
-     * 恒生异常框架
-     */
-    @org.springframework.web.bind.annotation.ExceptionHandler(BaseCommonException.class)
+
+//    @org.springframework.web.bind.annotation.ExceptionHandler(BaseCommonException.class)
     @ResponseBody
     public ExceptionResponse<String> baseCommonException(HttpServletRequest request, BaseCommonException ex)
     {
