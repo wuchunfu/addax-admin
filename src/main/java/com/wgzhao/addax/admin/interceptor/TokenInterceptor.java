@@ -3,6 +3,7 @@ package com.wgzhao.addax.admin.interceptor;
 import com.wgzhao.addax.admin.config.ConfigConstants;
 import com.wgzhao.addax.admin.enums.ResponseEnum;
 import com.wgzhao.addax.admin.exception.UnifiedException;
+import com.wgzhao.addax.admin.utils.RedisUtil;
 import com.wgzhao.addax.admin.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +28,7 @@ import java.util.Objects;
 public class TokenInterceptor
         implements HandlerInterceptor
 {
-    private final HSCache hsCache = HSCacheUtils.get("default").getCache();
+    private final RedisUtil redisUtil = new RedisUtil();
 
     private static final String AUTH_PATH1 = "json";
     private static final String AUTH_PATH2 = "sourceConfig";
@@ -91,7 +92,7 @@ public class TokenInterceptor
                     ResponseEnum.ARGUMENTS_IS_NULL.getReturnMsg());
         }
         log.info("<== preHandle - 权限拦截器.  token={}", token);
-        loginUser = hsCache.get("ZEUS:" + token, UserVo.class);
+        loginUser = redisUtil.get("ZEUS:" + token, UserVo.class);
         log.info("<== preHandle - 权限拦截器.  loginUser={}", loginUser);
         if (Objects.isNull(loginUser)) {
             log.error("<== preHandle - 获取用户信息失败, 不允许操作，url=", uri);
@@ -99,7 +100,7 @@ public class TokenInterceptor
                     ResponseEnum.TOKEN_INVALID.getReturnMsg());
         }
         //重新设置token两小时失效
-        hsCache.put("ZEUS:" + token, loginUser, ConfigConstants.tokenExpirationTime);
+        redisUtil.set("ZEUS:" + token, loginUser, ConfigConstants.tokenExpirationTime);
         return true;
     }
 }

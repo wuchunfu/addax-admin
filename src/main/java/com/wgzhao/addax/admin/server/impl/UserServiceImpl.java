@@ -9,6 +9,7 @@ import com.wgzhao.addax.admin.mapper.UserCustomMapper;
 import com.wgzhao.addax.admin.mapper.UserMapper;
 import com.wgzhao.addax.admin.pojo.User;
 import com.wgzhao.addax.admin.server.UserService;
+import com.wgzhao.addax.admin.utils.RedisUtil;
 import com.wgzhao.addax.admin.utils.TokenUtil;
 import com.wgzhao.addax.admin.utils.UUIDUtil;
 import com.wgzhao.addax.admin.vo.QueryUserVo;
@@ -34,7 +35,7 @@ import java.util.Objects;
 public class UserServiceImpl
         implements UserService
 {
-    private final HSCache hsCache = HSCacheUtils.get("default").getCache();
+    private final RedisUtil redisUtil = new RedisUtil();
 
     @Resource
     private UserMapper userMapper;
@@ -87,7 +88,7 @@ public class UserServiceImpl
         userVo.setUserName(user.getUsername());
         userVo.setUserType(user.getUtype());
         userVo.setToken(token);
-        hsCache.put("ZEUS:" + token, userVo, ConfigConstants.tokenExpirationTime);
+        redisUtil.set("ZEUS:" + token, userVo, ConfigConstants.tokenExpirationTime);
         return ServerResponse.createBySuccess("登录成功", userVo);
     }
 

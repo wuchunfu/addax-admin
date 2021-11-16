@@ -41,6 +41,7 @@ import com.wgzhao.addax.admin.server.TableService;
 import com.wgzhao.addax.admin.server.TaskService;
 import com.wgzhao.addax.admin.utils.DateUtil;
 import com.wgzhao.addax.admin.utils.HttpUtil;
+import com.wgzhao.addax.admin.utils.RedisUtil;
 import com.wgzhao.addax.admin.utils.UUIDUtil;
 import com.wgzhao.addax.admin.vo.JsonProcessVo;
 import com.wgzhao.addax.admin.vo.JsonTaskVo;
@@ -111,9 +112,9 @@ public class JsonServiceImpl
     @Resource
     private TableMainService tableMainService;
 
-    private final HSCache hsCache = HSCacheUtils.get("default").getCache();
+    private final RedisUtil redisUtil = new RedisUtil();
 
-    private final HSCache hsCacheNew = HSCacheUtils.get("trading").getCache();
+//    private final HSCache hsCacheNew = HSCacheUtils.get("trading").getCache();
 
     /**
      * 按每100个一组分割
@@ -173,7 +174,7 @@ public class JsonServiceImpl
         if (Objects.isNull(taskInfo)) {
             return ServerResponse.createByErrorMessage("主任务记录生成失败");
         }
-        hsCache.put("ZEUS:JSON:" + randomStr, taskInfo.getId(), 7200);
+        redisUtil.set("ZEUS:JSON:" + randomStr, taskInfo.getId(), 7200);
         //循环创建任务子表记录
         int limit = countStep(tableList.size());
         Stream.iterate(0, n -> n + 1).limit(limit).forEach(i -> {
@@ -340,7 +341,7 @@ public class JsonServiceImpl
     @Override
     public ServerResponse<JsonProcessVo> getAllGenerateJsonProcess(RandomStrDto dto)
     {
-        String taskId = hsCache.get("ZEUS:JSON:" + dto.getRandomStr(), String.class);
+        String taskId = redisUtil.get("ZEUS:JSON:" + dto.getRandomStr(), String.class);
         if (StringUtils.isBlank(taskId)) {
             return ServerResponse.createBySuccessMessage("传参有误");
         }
