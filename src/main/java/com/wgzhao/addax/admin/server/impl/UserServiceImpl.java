@@ -37,7 +37,6 @@ import com.wgzhao.addax.admin.mapper.UserCustomMapper;
 import com.wgzhao.addax.admin.mapper.UserMapper;
 import com.wgzhao.addax.admin.pojo.User;
 import com.wgzhao.addax.admin.server.UserService;
-import com.wgzhao.addax.admin.utils.RedisUtil;
 import com.wgzhao.addax.admin.utils.TokenUtil;
 import com.wgzhao.addax.admin.utils.UUIDUtil;
 import com.wgzhao.addax.admin.vo.QueryUserVo;
@@ -45,7 +44,7 @@ import com.wgzhao.addax.admin.vo.UserVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.DependsOn;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -63,7 +62,8 @@ import java.util.Objects;
 public class UserServiceImpl
         implements UserService
 {
-    private final RedisUtil redisUtil = new RedisUtil();
+    @Autowired
+    private RedisHelperImpl redisHelper;
 
     @Resource
     private UserMapper userMapper;
@@ -116,7 +116,7 @@ public class UserServiceImpl
         userVo.setUserName(user.getUsername());
         userVo.setUserType(user.getUtype());
         userVo.setToken(token);
-        redisUtil.set("ZEUS:" + token, userVo, ConfigConstants.tokenExpirationTime);
+        redisHelper.valuePut("ZEUS:" + token, userVo, ConfigConstants.tokenExpirationTime);
         return ServerResponse.createBySuccess("登录成功", userVo);
     }
 

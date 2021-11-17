@@ -44,8 +44,8 @@ public class CoreConfig
         implements WebMvcConfigurer
 {
 
-    @Resource
-    private TokenInterceptor tokenInterceptor;
+//    @Resource
+//    private TokenInterceptor tokenInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry)
@@ -64,10 +64,10 @@ public class CoreConfig
                 .allowCredentials(true);
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry)
-    {
-        //token 验证拦截器
-        registry.addInterceptor(tokenInterceptor).addPathPatterns("/**");
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry)
+//    {
+//        //token 验证拦截器
+//        registry.addInterceptor(tokenInterceptor).addPathPatterns("/**");
+//    }
 }

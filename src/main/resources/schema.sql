@@ -74,7 +74,7 @@ CREATE TABLE `t_source_config`
     `dtype`                     int(1)      NOT NULL COMMENT '数据库类型0.识别不到类型;1.RDBMS;2.Oracle;3.MySQL;4.SQLServer;5.PostgreSQL;6.ClickHouse7.Hive/HDFS;8.DBF;9.Hbase2.0withPhoenix;10.Hbase1.0withPhoenix',
     `dstatus`                   int(1)      NOT NULL DEFAULT 1 COMMENT '数据源状态0：删除；1:启用（默认值）；2:停用',
     `path`                      varchar(100)         DEFAULT NULL COMMENT '要读取的文件路径',
-    `defaultFS`                 varchar(100)         DEFAULT NULL COMMENT 'Hadoop hdfs 文件系统namenode节点地址',
+    `defaultfs`                 varchar(100)         DEFAULT NULL COMMENT 'Hadoop hdfs 文件系统namenode节点地址',
     `have_kerberos`             int(1)               DEFAULT NULL COMMENT '是否有Kerberos认证0:否；1:是',
     `kerberos_keytab_file_path` varchar(100)         DEFAULT NULL COMMENT 'Kerberos认证 keytab文件路径',
     `kerberos_principal`        text                 DEFAULT NULL COMMENT 'Kerberos认证Principal名',
@@ -212,22 +212,6 @@ CREATE TABLE `t_type_info`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 COMMENT ='数据库类型信息';
 
-
-/*
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
-
 -- addax.t_user definition
 
 CREATE TABLE `t_user`
@@ -242,3 +226,6 @@ CREATE TABLE `t_user`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   ROW_FORMAT = DYNAMIC COMMENT ='用户表';
+
+-- insert admin user
+insert into t_user(id, username, pass, utype) values(1, 'admin', md5('admin'), 1);

@@ -24,7 +24,7 @@
     <result column="dtype" property="dtype" jdbcType="INTEGER" />
     <result column="dstatus" property="dstatus" jdbcType="INTEGER" />
     <result column="path" property="path" jdbcType="VARCHAR" />
-    <result column="defaultFS" property="defaultfs" jdbcType="VARCHAR" />
+    <result column="defaultFS" property="defaultFS" jdbcType="VARCHAR" />
     <result column="have_kerberos" property="haveKerberos" jdbcType="INTEGER" />
     <result column="kerberos_keytab_file_path" property="kerberosKeytabFilePath" jdbcType="VARCHAR" />
     <result column="kerberos_principal" property="kerberosPrincipal" jdbcType="VARCHAR" />
@@ -65,7 +65,7 @@
       mtime)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{user,jdbcType=VARCHAR}, 
       #{pass,jdbcType=VARCHAR}, #{dsn,jdbcType=VARCHAR}, #{dtype,jdbcType=INTEGER}, #{dstatus,jdbcType=INTEGER}, 
-      #{path,jdbcType=VARCHAR}, #{defaultfs,jdbcType=VARCHAR}, #{haveKerberos,jdbcType=INTEGER}, 
+      #{path,jdbcType=VARCHAR}, #{defaultFS,jdbcType=VARCHAR}, #{haveKerberos,jdbcType=INTEGER},
       #{kerberosKeytabFilePath,jdbcType=VARCHAR}, #{kerberosPrincipal,jdbcType=VARCHAR}, 
       #{hadoopConfig,jdbcType=VARCHAR}, #{hiveUserName,jdbcType=VARCHAR}, #{hivePass,jdbcType=VARCHAR}, 
       #{hiveConnectStr,jdbcType=VARCHAR}, #{isEnableHa,jdbcType=INTEGER}, #{nameServices,jdbcType=VARCHAR}, 
@@ -99,7 +99,7 @@
       <if test="path != null" >
         path,
       </if>
-      <if test="defaultfs != null" >
+      <if test="defaultFS != null" >
         defaultFS,
       </if>
       <if test="haveKerberos != null" >
@@ -167,7 +167,7 @@
       <if test="path != null" >
         #{path,jdbcType=VARCHAR},
       </if>
-      <if test="defaultfs != null" >
+      <if test="defaultFS != null" >
         #{defaultfs,jdbcType=VARCHAR},
       </if>
       <if test="haveKerberos != null" >

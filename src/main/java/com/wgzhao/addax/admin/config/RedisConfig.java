@@ -30,6 +30,7 @@ package com.wgzhao.addax.admin.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,9 +46,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 
 @Configuration
-@SuppressWarnings("all")
 @EnableCaching
-public class RedisConfig {
+public class RedisConfig extends CachingConfigurerSupport
+{
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory factory) {
@@ -72,7 +73,7 @@ public class RedisConfig {
         return cacheManager;
     }
 
-    @Bean(name="myredisTemplate")
+    @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);

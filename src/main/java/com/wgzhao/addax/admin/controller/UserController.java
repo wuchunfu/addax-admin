@@ -30,9 +30,11 @@ package com.wgzhao.addax.admin.controller;
 
 import com.wgzhao.addax.admin.common.ServerResponse;
 import com.wgzhao.addax.admin.dto.QueryUserDto;
+import com.wgzhao.addax.admin.dto.UserDto;
 import com.wgzhao.addax.admin.server.UserService;
 import com.wgzhao.addax.admin.vo.QueryUserVo;
 import com.github.pagehelper.PageInfo;
+import com.wgzhao.addax.admin.vo.UserVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * @author liuting
@@ -51,10 +54,25 @@ public class UserController
     @Resource
     private UserService userService;
 
+    @ApiOperation("注册接口")
+    @PostMapping(value = "register")
+    public ServerResponse<String> register(@RequestBody @Valid UserDto userDto)
+    {
+        return userService.addUser(userDto);
+    }
+
+    @ApiOperation("用户登录接口")
+    @PostMapping(value = "login")
+    public ServerResponse<UserVo> login(@RequestBody UserDto userDto)
+    {
+        return userService.login(userDto.getUserName(), userDto.getPassword());
+    }
+
     @ApiOperation("用户列表-分页")
     @PostMapping(value = "queryUserListWithPage")
     public ServerResponse<PageInfo<QueryUserVo>> queryUserListWithPage(@RequestBody QueryUserDto queryUserDto)
     {
         return userService.queryUserListWithPage(queryUserDto);
     }
+
 }

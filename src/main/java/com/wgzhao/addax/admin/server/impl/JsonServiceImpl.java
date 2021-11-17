@@ -59,10 +59,10 @@ import com.wgzhao.addax.admin.pojo.SourceConfig;
 import com.wgzhao.addax.admin.pojo.SubTaskInfo;
 import com.wgzhao.addax.admin.pojo.SystemConfig;
 import com.wgzhao.addax.admin.pojo.TableInfo;
-import com.wgzhao.addax.admin.pojo.TableInfoKey;
 import com.wgzhao.addax.admin.pojo.TaskInfo;
 import com.wgzhao.addax.admin.server.DataChangeRecordService;
 import com.wgzhao.addax.admin.server.JsonService;
+import com.wgzhao.addax.admin.server.RedisHelper;
 import com.wgzhao.addax.admin.server.SourceConfigService;
 import com.wgzhao.addax.admin.server.SubTaskService;
 import com.wgzhao.addax.admin.server.SystemConfigService;
@@ -70,7 +70,6 @@ import com.wgzhao.addax.admin.server.TableMainService;
 import com.wgzhao.addax.admin.server.TableService;
 import com.wgzhao.addax.admin.server.TaskService;
 import com.wgzhao.addax.admin.utils.DateUtil;
-import com.wgzhao.addax.admin.utils.RedisUtil;
 import com.wgzhao.addax.admin.utils.UUIDUtil;
 import com.wgzhao.addax.admin.vo.JsonProcessVo;
 import com.wgzhao.addax.admin.vo.JsonTaskVo;
@@ -82,6 +81,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -138,7 +138,8 @@ public class JsonServiceImpl
     @Resource
     private TableMainService tableMainService;
 
-    private final RedisUtil redisUtil = new RedisUtil();
+    @Autowired
+    private RedisHelper redisHelper;
 
 //    private final HSCache hsCacheNew = HSCacheUtils.get("trading").getCache();
 
@@ -200,7 +201,7 @@ public class JsonServiceImpl
         if (Objects.isNull(taskInfo)) {
             return ServerResponse.createByErrorMessage("主任务记录生成失败");
         }
-        redisUtil.set("ZEUS:JSON:" + randomStr, taskInfo.getId(), 7200);
+        redisHelper.valuePut("ZEUS:JSON:" + randomStr, taskInfo.getId(), 7200L);
         //循环创建任务子表记录
         int limit = countStep(tableList.size());
         Stream.iterate(0, n -> n + 1).limit(limit).forEach(i -> {
@@ -368,7 +369,7 @@ public class JsonServiceImpl
     @Override
     public ServerResponse<JsonProcessVo> getAllGenerateJsonProcess(RandomStrDto dto)
     {
-        String taskId = redisUtil.get("ZEUS:JSON:" + dto.getRandomStr(), String.class);
+        String taskId = (String) redisHelper.getValue("ZEUS:JSON:" + dto.getRandomStr());
         if (StringUtils.isBlank(taskId)) {
             return ServerResponse.createBySuccessMessage("传参有误");
         }
@@ -612,7 +613,7 @@ public class JsonServiceImpl
         Map<String, Object> map = new HashMap<>();
         map.put("${DB}", db);
         map.put("${TABLE}", table);
-        String td = redisUtil.get("param.LTD", String.class);
+        String td = (String) redisHelper.getValue("param.LTD");
         String cd = DateUtil.parseLocalDateTimeToStr(DateUtil.DATE_FORMAT_YYYYMMDD, LocalDate.now());
         map.put("${TD}", td);
         map.put("${CD}", cd);
